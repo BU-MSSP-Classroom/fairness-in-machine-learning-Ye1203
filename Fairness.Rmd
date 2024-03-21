@@ -1,7 +1,7 @@
 ---
 title: "Fairness"
-author: "Your Name"
-date: "2023-02-07"
+author: "Bingtian Ye"
+date: "2024-03-19"
 output: html_document
 
 ---
@@ -323,7 +323,7 @@ Do you see any problem with this model with protected attributes such as race an
 Choose one of the data described above as your target problem.
 
 ~~~
-Please write your answer in full sentences.
+Predict the defaults on consumer loans in the German market.
 
 
 ~~~
@@ -332,7 +332,9 @@ Discuss what a favorable label in this problem is and what does a favorable labe
 Is it assertive or non-punitive?
 
 ~~~
-Please write your answer in full sentences.
+Default.
+assertive.
+
 
 
 ~~~
@@ -340,7 +342,11 @@ Please write your answer in full sentences.
 What type of justice is this issue about?
 
 ~~~
-Please write your answer in full sentences.
+distributive justice
+▪ Distributive justice is equality in what people receive—the outcomes. 
+▪ Procedural justice is sameness in the way it is decided what people receive. 
+▪ Restorative justice repairs a harm. 
+▪ Retributive justice seeks to punish wrongdoers.  
 
 
 ~~~
@@ -348,7 +354,7 @@ Please write your answer in full sentences.
 Discuss the potential concerns about the data being used. 
 
 ~~~
-Please write your answer in full sentences.
+this model unfaily evaluates young customers
 
 
 ~~~
@@ -356,7 +362,8 @@ Please write your answer in full sentences.
 Discuss what type of group fairness metrics is appropriate for this problem.
 
 ~~~
-Please write your answer in full sentences.
+classifier fairness metrics.
+After analysis.
 
 
 ~~~
@@ -364,12 +371,29 @@ Please write your answer in full sentences.
 Using the appropriate fairness metrics, show if there are concerns in the prediction algorithm.
 
 ```{r}
-#
-#
+# Define the values for favorable and unfavorable outcomes
+fav <- "No"  # Assuming 'No' means the loan is repaid, which is favorable
+unfav <- "Yes"  # Assuming 'Yes' means the loan defaults, which is unfavorable
+
+# Define the values for privileged and unprivileged groups based on age category
+priv <- "(35,75]"
+unpr <- "(0,25]"
+
+# Use the predicted probability and a threshold to create a binary prediction
+germancredit$prediction <- ifelse(germancredit$probability >= 0.5, "No", "Yes")
+
+# Calculate the probabilities
+prob_fav_unpr <- mean(germancredit$BAD == fav & germancredit$prediction == fav & germancredit$Age_cat == unpr)
+prob_fav_priv <- mean(germancredit$BAD == fav & germancredit$prediction == fav & germancredit$Age_cat == priv)
+prob_unfav_unpr <- mean(germancredit$BAD == fav & germancredit$prediction == unfav & germancredit$Age_cat == unpr)
+prob_unfav_priv <- mean(germancredit$BAD == fav & germancredit$prediction == unfav & germancredit$Age_cat == priv)
+
+# Calculate the average absolute predictive value difference
+average_absolute_pvd <- (abs(prob_fav_unpr - prob_fav_priv) + abs(prob_unfav_unpr - prob_unfav_priv)) / 2
 ```
 
 ~~~
-Please write your answer in full sentences.
+Independence
 
 
 ~~~
